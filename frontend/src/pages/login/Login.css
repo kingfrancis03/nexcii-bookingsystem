@@ -1,0 +1,65 @@
+.container {
+    height: 100%;
+}
+
+.sides {
+    height: 100%;
+    width: 50%;
+}
+
+#logoSide {
+    width: 50%;
+}
+
+#formSide {
+    background: linear-gradient(to bottom, #0575E6, #02298A, #021B79);
+}
+
+.input-field {
+  height: 54px;
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  padding-left: 48px;
+  padding-right: 20px;
+  background-color: white;
+}
+
+.login-btn {
+  height: 54px;
+  width: 100%;
+  font-size: 16px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  color: white;
+  background-color: #0575E6;
+}
+
+.frgt-btn {
+  color: white;
+  font-family: poppins;
+}
+
+.inner-fields {
+    width: 50%;
+}
+
+.welcome-text {
+    color: whitesmoke;
+    font-family: poppins;
+    margin-bottom: 10px;
+}
+
+.welcome-text h2{
+    margin: 0;
+    font-size: 37px
+}
+
+.welcome-text p{
+    font-size: 16;
+    margin: 0;
+}
