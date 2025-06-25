@@ -1,3 +1,22 @@
+# Ignore backend environment file
+backend/.env
+
+# Ignore Python cache and virtualenv artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Ignore Pipenv files (optional)
+Pipfile.lock
+
+# Ignore virtual environments (in case you accidentally put it in the repo)
+.env/
+venv/
+env/
+.venv/
+
 # Logs
 logs
 *.log
