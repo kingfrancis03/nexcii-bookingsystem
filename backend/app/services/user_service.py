@@ -28,7 +28,12 @@ class UserService:
         if not user or not verify_password(credentials.password, user.password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        token = create_access_token({"sub": str(user.id)})
+        token = create_access_token({
+            "sub": str(user.id),
+            "role": str(user.role),
+            "username": str(user.username),
+            "name": str(user.username),
+            })
 
         return {"access_token": token, "token_type": "bearer"}
 

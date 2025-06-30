@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.core.auth import get_current_user
 
 router = APIRouter(
     prefix="/health",
@@ -6,8 +7,5 @@ router = APIRouter(
 )
 
 @router.get("/ping")
-def ping():
-    """
-    Simple health check endpoint
-    """
-    return {"status": "ok", "message": "pong"}
+def ping(current_user: dict = Depends(get_current_user)):
+    return {"message": "pong", "user": current_user}
