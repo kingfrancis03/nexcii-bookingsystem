@@ -1,10 +1,17 @@
-import React, { Component, useRef } from 'react';
+import React, { Component, ChangeEvent, FormEvent } from 'react';
+import { login } from '../../store/authSlice';
+import { Navigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import LogoImage from '../../components/LogoImage';
+import LoadingModal from '../../components/LoadingModal';
+import ErrorModal from '../../components/ErrorModal';
 import './Login.css'
 
 interface ComponentNameState {
   // Define state properties if needed
-  value: string
+  username: string
+  password: string
 }
 
 class Login extends Component<{}, ComponentNameState> {
@@ -13,31 +20,35 @@ class Login extends Component<{}, ComponentNameState> {
     super(props);
     this.state = {
       // Initialize state properties if needed
-      value: ""
+      username: '',
+      password: '',
     };
     this.labelRef = React.createRef()
   }
-  
-  handleFocus = () => {
-    if (this.labelRef.current) {
-      this.labelRef.current.classList.add('text-xs', '-translate-y-5');
-    }
+
+  handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleBlur = () => {
-    if (this.labelRef.current && !this.state.value) {
-      this.labelRef.current.classList.remove('text-xs', '-translate-y-5');
-    }
+  handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const { username, password } = this.state;
+    this.props.login({ username, password });
   };
-
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ value: e.target.value });
-  };
-
 
   render() {
-   return(
+    const { user, loading, error } = this.props;
+
+    if (user?.role === 'admin') {
+      return <Navigate to="/dashboard" />;
+    } else if (user?.role === 'user') {
+      return <Navigate to="/booking" />;
+    }
+
+    return(
         <div className='flex justify-between items-center'>
+        { loading ? <LoadingModal message="Logging in..."/> : null }
+        { error ? <ErrorModal error={error}/>: null }
             <div className='sides flex items-center justify-center' id='logoSide'>
                 <LogoImage width={300}/>
             </div>
@@ -47,7 +58,7 @@ class Login extends Component<{}, ComponentNameState> {
                     <h2 className="text-2xl font-semibold mb-6">Hello !</h2>
                     <p>Welcome Back</p>
                   </div>
-                  <form className=''>
+                  <form className='' onSubmit={this.handleSubmit}>
                     {/* Username Field */}
                     <div className="relative w-full">
                       {/* Input */}
@@ -55,8 +66,10 @@ class Login extends Component<{}, ComponentNameState> {
                         type="text"
                         id="username"
                         name="username"
+                        value={this.state.username}
                         className="input-field"
                         placeholder="username"
+                        onChange={this.handleChange}
                       />
                     </div>
 
@@ -69,13 +82,15 @@ class Login extends Component<{}, ComponentNameState> {
                         name="password"
                         placeholder="password"
                         className="input-field"
+                        value={this.state.password}
+                        onChange={this.handleChange}
                       />
                     </div>
 
                     {/* Submit Button */}
                     <button
                       type="submit"
-                      className="login-btn bg-blue-700 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                      className="login-btn cursor-pointer bg-blue-700 text-white py-2 rounded-md hover:bg-blue-700 transition"
                     >
                       Login
                     </button>
@@ -94,4 +109,14 @@ class Login extends Component<{}, ComponentNameState> {
   }
 }
 
-export default Login;
+const mapStateToProps = (state: any) => ({
+  user: state.auth.user,
+  loading: state.auth.loading,
+  error: state.auth.error,
+});
+
+const mapDispatchToProps = {
+  login,
+};
+
+export default connect(mapStateToProps, { login })(Login);

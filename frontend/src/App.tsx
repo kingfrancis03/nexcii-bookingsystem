@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import RoleGuard from './components/RoleGuard';
+import PrivateRoute from './components/PrivateRoute';
+
+
 import Dashboard from './pages/dashboard';
 import Login from './pages/login';
 
