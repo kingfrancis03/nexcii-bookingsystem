@@ -1,5 +1,6 @@
 from sqlalchemy import Column, BigInteger, String, TIMESTAMP
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from app.database.database import Base
 
 class User(Base):
@@ -15,3 +16,5 @@ class User(Base):
     remember_token = Column(String(100), nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now())
+
+    records_created = relationship("TruckingRecord", back_populates="creator")

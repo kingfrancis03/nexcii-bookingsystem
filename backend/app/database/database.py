@@ -3,15 +3,19 @@ from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from app.core.config import get_settings
 
 settings = get_settings()
-print("DEBUG: DATABASE_URL =", get_settings().DATABASE_URL)
+print("DEBUG: DATABASE_URL =", settings.DATABASE_URL)
 
+# ✅ Use synchronous engine
 engine = create_engine(settings.DATABASE_URL, echo=True)
-SessionLocal = sessionmaker(bind=engine)
 
+# ✅ Standard sessionmaker
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+# ✅ Base class for models
 class Base(DeclarativeBase):
     pass
 
-# DB Dependency
+# ✅ Dependency for FastAPI routes
 def get_db():
     db = SessionLocal()
     try:

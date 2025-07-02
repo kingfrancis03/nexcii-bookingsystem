@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health_controller, user_controller  
+from app.api import health_controller, user_controller, trucking_record_controller, trucking_company_controller, vessel_controller
 
 app = FastAPI(
     title="Booking Management System",
@@ -23,3 +23,6 @@ app.add_middleware(
 # Include sample router
 app.include_router(user_controller.router)
 app.include_router(health_controller.router)
+app.include_router(trucking_record_controller.router)
+app.include_router(trucking_company_controller.router)
+app.include_router(vessel_controller.router)

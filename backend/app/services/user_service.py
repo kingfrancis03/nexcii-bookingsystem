@@ -1,11 +1,13 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserLogin
 from app.utils.security import hash_password, verify_password, create_access_token
 from fastapi import HTTPException, status
 
 class UserService:
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     def register(self, user: UserCreate):
