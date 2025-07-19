@@ -38,13 +38,13 @@ class Login extends Component<{}, ComponentNameState> {
 
   render() {
     const { user, loading, error } = this.props;
-
+    
     if (user?.role === 'admin') {
       return <Navigate to="/dashboard" />;
     } else if (user?.role === 'user') {
       return <Navigate to="/booking" />;
     }
-
+    
     return(
         <div className='flex justify-between items-center'>
         { loading ? <LoadingModal message="Logging in..."/> : null }
