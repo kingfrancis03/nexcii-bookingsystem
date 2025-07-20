@@ -1,7 +1,9 @@
 ### Run the server
 
 ```bash
-pipenv shell
+source venv/Scripts/activate
+```
 
 ```bash
 uvicorn app.main:app --reload
+```
