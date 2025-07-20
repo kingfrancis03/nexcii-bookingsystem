@@ -7,5 +7,7 @@ router = APIRouter(
 )
 
 @router.get("/ping")
-def ping(current_user: dict = Depends(get_current_user)):
-    return {"message": "pong", "user": current_user}
+# def ping(current_user: dict = Depends(get_current_user)):
+#     return {"message": "pong", "user": current_user}
+def ping():
+    return {"message": "pong", "user": "user"}
