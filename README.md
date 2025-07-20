@@ -70,8 +70,3 @@ uvicorn app.main:app --reload
 * Make sure you have **Node.js**, **npm**, and **Python 3** installed.
 * Use a virtual environment for backend Python dependencies.
 * You can configure ports and environment variables as needed in your project settings or `.env` files.
-
-```
-
-Let me know if you'd like to add sections for `.env` setup, Git cloning, or Docker support.
-```
