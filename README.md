@@ -39,6 +39,14 @@ Make sure you're in your virtual environment, then install the backend dependenc
 pip install -r requirements.txt
 ```
 
+### 🧪 Create a virtual environment
+
+Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
 ### 🧪 Activate Virtual Environment
 
 Activate the virtual environment:
