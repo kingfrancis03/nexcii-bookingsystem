@@ -13,7 +13,6 @@ const root = createRoot(container!);
 
 const validateTokenAndRender = async () => {
   const token = localStorage.getItem('token');
-  console.log(token);
   
   if (token) {
     try {

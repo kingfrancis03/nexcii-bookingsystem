@@ -42,7 +42,7 @@ class Login extends Component<{}, ComponentNameState> {
     if (user?.role === 'admin') {
       return <Navigate to="/dashboard" />;
     } else if (user?.role === 'user') {
-      return <Navigate to="/booking" />;
+      return <Navigate to="/booking-system" />;
     }
     
     return(

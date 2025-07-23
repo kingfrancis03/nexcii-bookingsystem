@@ -1,6 +1,7 @@
 import React, { Component, createRef  } from 'react';
 import { connect } from 'react-redux';
 import { Settings, Bell, LogOut } from 'lucide-react';
+import { logout } from '../../store/authSlice'; // adjust path as needed
 
 type Notification = {
   id: string;
@@ -10,10 +11,12 @@ type Notification = {
 };
 
 interface NavbarState {
+  navTitle: 'Title'
   showNotif: boolean;
   showSettings: boolean;
 }
 interface NavbarProps {
+  navTitle: string
   user: any;
   notifications: Notification[];
 }
@@ -21,6 +24,7 @@ class Navbar extends Component<NavbarProps, NavbarState> {
   notifRef = createRef<HTMLDivElement>();
   settingsRef = createRef<HTMLDivElement>();
   state: NavbarState = {
+    navTitle: 'Title',
     showNotif: false,
     showSettings: false,
   };
@@ -76,7 +80,7 @@ class Navbar extends Component<NavbarProps, NavbarState> {
     
     return (
       <header className="h-16 bg-white border-md px-6 flex items-center justify-between fixed left-64 right-0 top-0 z-10">
-        <div className="text-lg font-semibold">Dashboard</div>
+        <div className="text-lg font-bold text-[#0E75BC]">{ this.props.navTitle || 'Title' }</div>
         <div className="flex items-center gap-5">
           <span>{user?.username || 'User'}</span>
            {/* Notifications */}
@@ -134,10 +138,13 @@ class Navbar extends Component<NavbarProps, NavbarState> {
     );
   }
 }
-// ✅ map Redux state to props
+
 const mapStateToProps = (state: any) => ({
   user: state.auth.user, // adjust this path based on your store
 });
 
-// ✅ connect to Redux
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = {
+  logout,
+};
+
+export default connect(mapStateToProps,  mapDispatchToProps)(Navbar);

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date, time, datetime
-from typing import Optional
+from typing import Optional, List
 from .trucking_company import TruckingCompanyOut
 from .vessel import VesselOut, VesselStatusEnum
 
@@ -68,7 +68,6 @@ class TruckingRecordCreate(BaseModel):
 
     class Config:
         orm_mode = True
-
 
 # 🔄 Update schema (for partial updates — PATCH/PUT)
 class TruckingRecordUpdate(BaseModel):

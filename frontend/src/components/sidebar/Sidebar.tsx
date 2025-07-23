@@ -23,7 +23,7 @@ class Sidebar extends Component {
         </div>
 
         {/* Main sidebar content */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 border-r border-gray-300">
           <div className='w-full flex items-center justify-center'>
             <LogoImage width={100} />
           </div>

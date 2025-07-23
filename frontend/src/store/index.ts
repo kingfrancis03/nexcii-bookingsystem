@@ -1,20 +1,21 @@
-// src/store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
+import truckingRecordsReducer from './truckingRecordSlice'; // ✅ import your new slice
 
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage
+import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 
 // Create persist config
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth'], // 🔒 Only persist auth for now
 };
 
-// Combine reducers (in case you add more in future)
+// Combine reducers
 const rootReducer = combineReducers({
   auth: authReducer,
+  truckingRecords: truckingRecordsReducer, // ✅ add your trucking slice here
 });
 
 // Wrap reducer with persistReducer
@@ -25,15 +26,15 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // needed for redux-persist
+      serializableCheck: false,
     }),
 });
 
-// 🐞 Debug current Redux state
+// Optional: Debug Redux state
 store.subscribe(() => {
   console.log('[Redux State]', store.getState());
 });
-// Create persistor
+
 export const persistor = persistStore(store);
 
 // Types

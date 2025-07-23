@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.services.vessel_service import VesselService
 from app.schemas.vessel import VesselCreate, VesselUpdate, VesselOut
+from app.core.auth import get_current_user
 
-router = APIRouter(prefix="/vessels", tags=["Vessels"])
+router = APIRouter(prefix="/vessels", tags=["Vessels"], dependencies=[Depends(get_current_user)])
 
 
 class VesselController:
