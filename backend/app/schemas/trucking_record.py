@@ -2,7 +2,18 @@ from pydantic import BaseModel
 from datetime import date, time, datetime
 from typing import Optional, List
 from .trucking_company import TruckingCompanyOut
-from .vessel import VesselOut, VesselStatusEnum
+from .vessel import VesselOut
+from .fee_schema import FeeForRecord
+
+# 🧾 Dynamic Fee Schema
+class TruckingRecordFeeOut(BaseModel):
+    id: int
+    fee_id: int
+    amount: float
+    fee: FeeForRecord  # ✅ This is the joined full fee object
+
+    class Config:
+        orm_mode = True
 
 # 🟢 Main output schema
 class TruckingRecordOut(BaseModel):
@@ -20,11 +31,6 @@ class TruckingRecordOut(BaseModel):
     plate_number: str
     contact_info: Optional[str]
 
-    ppa_fee: float
-    terminal_fee: Optional[float]
-    pcg_fee: float
-    parking_fee1: float
-    parking_fee2: float
     weight_1: Optional[float]
     weight_2: Optional[float]
 
@@ -33,22 +39,24 @@ class TruckingRecordOut(BaseModel):
     created_by: Optional[int]
     updated_by: Optional[int]
 
+    fees: Optional[List[TruckingRecordFeeOut]]  # ✅ List of dynamic fees
 
     class Config:
         orm_mode = True
 
-
+# 🔎 For filtering
 class TruckingRecordFilter(BaseModel):
-    destination: str
-    record_date: date
-    record_time: time
+    destination: Optional[str]
+    record_date: Optional[date]
+    record_time: Optional[time]
     vessel_id: Optional[int]
     trucking_company_id: Optional[int]
-    plate_number: str
+    plate_number: Optional[str]
     contact_info: Optional[str]
-    created_by: Optional[int]  
+    created_by: Optional[int]
+    overview: Optional[str]  # e.g., "today" or "this_month"
 
-# ✳️ Create schema (used when creating a new record)
+# ✳️ Create schema
 class TruckingRecordCreate(BaseModel):
     destination: str
     record_date: date
@@ -57,19 +65,14 @@ class TruckingRecordCreate(BaseModel):
     trucking_company_id: Optional[int]
     plate_number: str
     contact_info: Optional[str]
-    ppa_fee: float
-    terminal_fee: Optional[float]
-    pcg_fee: float
-    parking_fee1: float
-    parking_fee2: float
     weight_1: Optional[float]
     weight_2: Optional[float]
-    created_by: Optional[int]  # Optional depending on how your logic works
+    created_by: Optional[int]
 
     class Config:
         orm_mode = True
 
-# 🔄 Update schema (for partial updates — PATCH/PUT)
+# 🔄 Update schema
 class TruckingRecordUpdate(BaseModel):
     destination: Optional[str]
     record_date: Optional[date]
@@ -78,11 +81,6 @@ class TruckingRecordUpdate(BaseModel):
     trucking_company_id: Optional[int]
     plate_number: Optional[str]
     contact_info: Optional[str]
-    ppa_fee: Optional[float]
-    terminal_fee: Optional[float]
-    pcg_fee: Optional[float]
-    parking_fee1: Optional[float]
-    parking_fee2: Optional[float]
     weight_1: Optional[float]
     weight_2: Optional[float]
     updated_by: Optional[int]

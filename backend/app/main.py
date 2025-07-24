@@ -6,7 +6,9 @@ from app.api import (
     trucking_record_controller,
     trucking_company_controller,
     vessel_controller,
-    dashboard_controller
+    dashboard_controller,
+    fee_controller,
+    trucking_record_fees_controller
 )
 
 # Create a sub-app that holds all API routers
@@ -19,6 +21,8 @@ api_app.include_router(trucking_record_controller.router)
 api_app.include_router(trucking_company_controller.router)
 api_app.include_router(vessel_controller.router)
 api_app.include_router(dashboard_controller.router)
+api_app.include_router(fee_controller.router)
+api_app.include_router(trucking_record_fees_controller.router)
 
 # Main FastAPI app
 app = FastAPI(
