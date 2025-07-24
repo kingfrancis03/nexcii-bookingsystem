@@ -1,6 +1,3 @@
-
-
-
 # Project Setup Guide
 
 This repository contains both the **Frontend** and **Backend** of the application.
@@ -176,5 +173,30 @@ Here’s an expanded and polished version of your **✅ Notes** section, includi
 
    * Visit [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
    * It should now prompt for login if required, or log in automatically using the updated password.
+
+---
+## 🧰 Git Helper Cheatsheet
+
+### 📥 Clone a Repository
+
+```bash
+git clone https://github.com/kingfrancis03/nexcii-bookingsystem 
+```
+
+---
+
+### 🔄 Keep Your Repo Updated
+
+#### Fetch the latest changes (without merging):
+
+```bash
+git fetch origin
+```
+
+#### Pull the latest changes (fetch + merge):
+
+```bash
+git pull origin main 
+```
 
 ---
