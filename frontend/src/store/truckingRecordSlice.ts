@@ -28,10 +28,10 @@ const truckingRecordsSlice = createSlice({
   },
 });
 
-export const fetchTruckingRecords = (skip = 0, limit = 10) => async (dispatch) => {
+export const fetchTruckingRecords = (skip = 0, limit = 10, overview: string | null = null) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const result = await fetchTruckingRecordsApi(skip, limit);
+    const result = await fetchTruckingRecordsApi(skip, limit, overview);
     dispatch(setTruckingRecords({ records: result.data, total: result.total }));
   } catch (error) {
     dispatch(setError(error.message || 'Failed to fetch trucking records.'));

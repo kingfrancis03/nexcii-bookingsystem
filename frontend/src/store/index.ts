@@ -31,9 +31,9 @@ export const store = configureStore({
 });
 
 // Optional: Debug Redux state
-store.subscribe(() => {
-  console.log('[Redux State]', store.getState());
-});
+// store.subscribe(() => {
+//   console.log('[Redux State]', store.getState());
+// });
 
 export const persistor = persistStore(store);
 

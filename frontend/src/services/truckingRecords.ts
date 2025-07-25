@@ -17,9 +17,11 @@ interface FetchTruckingRecordsResponse {
   total: number;
 }
 
-export const fetchTruckingRecordsApi = async (skip = 0, limit = 10): Promise<FetchTruckingRecordsResponse> => {
+export const fetchTruckingRecordsApi = async (skip = 0, limit = 10, overview: string | null = null): Promise<FetchTruckingRecordsResponse> => {
+  console.log(overview);
+  
   const res = await axios.get('/trucking-records', {
-    params: { skip, limit },
+    params: { skip, limit, ...(overview ? { overview } : {}) },
   });
 
   return {

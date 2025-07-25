@@ -12,6 +12,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { username: string; password: string }) => {
     const response = await loginApi(credentials);
+  
     return response;
   }
 );

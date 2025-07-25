@@ -8,18 +8,62 @@ interface TransactionsTabProps {
 
 }
 
+interface TransactionsTabState {
+    currentPage: number,
+    overview: {
+        title: string,
+        overviewType: number
+    }
+    theaders: [{
+        key: string,
+        label: any
+    }]
+    visibleColumns: []
+}
 
-class TransactionsTab extends Component<TransactionsTabProps, { currentPage: number }> {
+class TransactionsTab extends Component<TransactionsTabProps, TransactionsTabState> {
   state = {
     currentPage: 1,
+    overview: {
+        title: 'All Transactions',
+        overviewType: 1
+    },
+    theaders: [{}],
+    visibleColumns: []
   };
-  testOnClick = (sample_string) => {
-    alert(sample_string)
+
+  changeOverview = (index) => {
+    const overviewList = [
+        {
+            title: 'All Transactions',
+            overviewType: 1
+        },
+        {
+            title: "Today's Transactions",
+            overviewType: 2
+        },
+        {
+            title: "This Month's Transactions",
+            overviewType: 3
+        },
+    ]
+    this.setState({overview: overviewList[index]})
   }
 
-  handlePageChange = (page: number) => {
-    this.setState({ currentPage: page });
-  };
+  getHeaders = (theaders) => {
+    this.setState({theaders: theaders})
+  }
+
+  handleColumnChange = (newVisibleColumns) => {
+    console.log(newVisibleColumns);
+    this.setState({ visibleColumns: newVisibleColumns });
+  }
+
+  setVisibleColumns = (visibleColumns) => {
+    console.log(visibleColumns);
+    
+    this.setState({ visibleColumns: visibleColumns });
+  }
 
   render() {
     return (
@@ -27,7 +71,11 @@ class TransactionsTab extends Component<TransactionsTabProps, { currentPage: num
 
     {/* Taskbar (fixed under header) */}
         <div className="shrink-0">
-            <TaskBar testOnClick={this.testOnClick} />
+            <TaskBar
+                changeOverview={this.changeOverview}
+                onToggleColumn={this.handleColumnChange}
+                theaders={this.state.theaders}
+            />
         </div>
 
         {/* Main content */}
@@ -41,7 +89,13 @@ class TransactionsTab extends Component<TransactionsTabProps, { currentPage: num
                 Add Booking
             </button>
             </div>
-            <TruckingRecords />
+            <TruckingRecords
+                overview={this.state.overview}
+                recordTitle={this.state.overview.title}
+                getHeaders={this.getHeaders}
+                visibleColumns={this.state.visibleColumns}
+                setVisibleColumns={this.setVisibleColumns}
+            />
         </div>
     </div>
     );

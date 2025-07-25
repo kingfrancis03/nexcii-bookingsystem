@@ -17,7 +17,7 @@ router = APIRouter(prefix="/trucking-records", tags=["Trucking Records"], depend
 class TruckingRecordController:
     def __init__(self):
         pass
-
+        
     def get_all_records(
         self,
         skip: int = Query(0, ge=0),
@@ -25,7 +25,9 @@ class TruckingRecordController:
         overview: Optional[str] = Query(None, regex="^(today|this_month)$"),
         db: Session = Depends(get_db),
     ) -> PaginatedResponse:
-        filters = {"overview": overview} if overview else {}
+        filters = {}
+        if overview:
+            filters["overview"] = overview
         
         return TruckingRecordService(db).get_paginated_records(
             skip=skip, limit=limit, filters=filters
@@ -35,11 +37,16 @@ class TruckingRecordController:
         self,
         skip: int = Query(0, ge=0),
         limit: int = Query(10, le=100),
+        overview: Optional[str] = Query(None, regex="^(today|this_month)$"),
         filters: TruckingRecordFilter = Body(...),
         db: Session = Depends(get_db),
     ) -> PaginatedResponse:
+        filters_dict = filters.model_dump(exclude_none=True)
+        if overview:
+            filters_dict["overview"] = overview
+
         return TruckingRecordService(db).get_paginated_records(
-            skip=skip, limit=limit, filters=filters.model_dump(exclude_none=True)
+            skip=skip, limit=limit, filters=filters_dict
         )
 
     def get_by_id(self, record_id: int, db: Session = Depends(get_db)) -> TruckingRecordOut:

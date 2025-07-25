@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from datetime import date
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import extract
+from sqlalchemy import extract, desc, asc
 from app.models.trucking_record import TruckingRecord
 from app.models.trucking_record_fees import TruckingRecordFee
 from app.models.fees import Fee
@@ -12,26 +12,16 @@ class TruckingRecordService:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self) -> list[TruckingRecord]:
-        return self.db.query(TruckingRecord).options(
-            joinedload(TruckingRecord.vessel),
-            joinedload(TruckingRecord.company),
-            joinedload(TruckingRecord.fees).joinedload(TruckingRecordFee.fee)
-        ).filter(TruckingRecord.is_deleted == False).all()
-
-    def get_paginated_records(
-        self,
-        skip: int = 0,
-        limit: int = 10,
-        filters: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    def get_all(self, filters: Optional[Dict[str, Any]] = None) -> list[TruckingRecord]:
         today = date.today()
+
         query = self.db.query(TruckingRecord).options(
+            joinedload(TruckingRecord.creator),
             joinedload(TruckingRecord.vessel),
             joinedload(TruckingRecord.company),
             joinedload(TruckingRecord.fees).joinedload(TruckingRecordFee.fee)
         ).filter(TruckingRecord.is_deleted == False)
-        print(query)
+
         if filters:
             overview = filters.pop("overview", None)
 
@@ -46,7 +36,39 @@ class TruckingRecordService:
             for key, value in filters.items():
                 if value is not None and hasattr(TruckingRecord, key):
                     query = query.filter(getattr(TruckingRecord, key) == value)
+        query = query.order_by(desc(TruckingRecord.record_date), desc(TruckingRecord.record_time))
 
+        return query.all()
+
+    def get_paginated_records(
+        self,
+        skip: int = 0,
+        limit: int = 10,
+        filters: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        today = date.today()
+        query = self.db.query(TruckingRecord).options(
+            joinedload(TruckingRecord.creator),
+            joinedload(TruckingRecord.vessel),
+            joinedload(TruckingRecord.company),
+            joinedload(TruckingRecord.fees).joinedload(TruckingRecordFee.fee)
+        ).filter(TruckingRecord.is_deleted == False)
+        if filters:
+            overview = filters.pop("overview", None)
+
+            if overview == "today":
+                query = query.filter(TruckingRecord.record_date == today)
+            elif overview == "this_month":
+                query = query.filter(
+                    extract("month", TruckingRecord.record_date) == today.month,
+                    extract("year", TruckingRecord.record_date) == today.year
+                )
+
+            for key, value in filters.items():
+                if value is not None and hasattr(TruckingRecord, key):
+                    query = query.filter(getattr(TruckingRecord, key) == value)
+        
+        query = query.order_by(desc(TruckingRecord.record_date), desc(TruckingRecord.record_time))
         total = query.count()
         records = query.offset(skip).limit(limit).all()
 

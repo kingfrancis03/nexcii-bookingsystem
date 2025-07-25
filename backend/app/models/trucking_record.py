@@ -20,11 +20,6 @@ class TruckingRecord(Base):
 
     plate_number = Column(String(255), nullable=False)
     contact_info = Column(String(255))
-    # ppa_fee = Column(DECIMAL(10, 2), nullable=False, default=0.00)
-    # terminal_fee = Column(DECIMAL(8, 2), nullable=True)
-    # pcg_fee = Column(DECIMAL(10, 2), nullable=False, default=0.00)
-    # parking_fee1 = Column(DECIMAL(10, 2), nullable=False, default=0.00)
-    # parking_fee2 = Column(DECIMAL(10, 2), nullable=False, default=0.00)
     weight_1 = Column(DECIMAL(10, 2))
     weight_2 = Column(DECIMAL(10, 2))
 
@@ -32,10 +27,10 @@ class TruckingRecord(Base):
 
     created_at = Column(TIMESTAMP)
     updated_at = Column(TIMESTAMP)
-    created_by = Column(Integer, ForeignKey("users.id"))
     updated_by = Column(BigInteger)
-    fees = relationship("TruckingRecordFee", back_populates="record")
+    created_by = Column(Integer, ForeignKey("users.id"))
     creator = relationship("User", back_populates="records_created")
+    fees = relationship("TruckingRecordFee", back_populates="record")
 
     class Config:
         orm_mode = True
