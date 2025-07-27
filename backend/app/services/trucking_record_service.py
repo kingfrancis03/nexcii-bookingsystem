@@ -63,6 +63,7 @@ class TruckingRecordService:
                     extract("month", TruckingRecord.record_date) == today.month,
                     extract("year", TruckingRecord.record_date) == today.year
                 )
+                
 
             for key, value in filters.items():
                 if value is not None and hasattr(TruckingRecord, key):

@@ -14,7 +14,7 @@ const FooterPagination: React.FC<FooterPaginationProps> = ({
   onPageChange,
 }) => {
   return (
-      <div className="flex justify-end mt-4 pr-4">
+      <div className="flex justify-end pr-4">
       <div className="inline-flex items-center gap-4 rounded-lg bg-white px-4 py-2 shadow text-sm text-gray-700">
         <button
           className="flex items-center gap-1 text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"

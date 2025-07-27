@@ -2,6 +2,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, extract
 from datetime import date
 from app.models.trucking_record import TruckingRecord
+from app.models.trucking_company import TruckingCompany
+from app.models.trucking_record_fees import TruckingRecordFee
+
 from datetime import date, timedelta
 
 import calendar
@@ -14,16 +17,13 @@ class DashboardService:
         today = date.today()
 
         total_bookings_today = self.db.query(TruckingRecord).filter(TruckingRecord.record_date == today).count()
+        total_bookings_this_month = self.db.query(TruckingRecord).filter(
+            extract("month", TruckingRecord.record_date) == today.month,
+            extract("year", TruckingRecord.record_date) == today.year
+        ).count()
 
-        total_fees = self.db.query(
-            TruckingRecord.ppa_fee +
-            TruckingRecord.terminal_fee +
-            TruckingRecord.pcg_fee +
-            TruckingRecord.parking_fee1 +
-            TruckingRecord.parking_fee2
-        ).all()
+        total_fees_sum = self.db.query(func.sum(TruckingRecordFee.amount)).scalar() or 0.0
 
-        total_fees_sum = sum(f[0] for f in total_fees)
         total_companies = self.db.query(TruckingRecord.trucking_company_id).distinct().count()
 
         total_vessels_today = self.db.query(TruckingRecord.vessel_id)\
@@ -33,6 +33,7 @@ class DashboardService:
 
         return {
             "total_bookings_today": total_bookings_today,
+            "total_bookings_this_month": total_bookings_this_month,
             "total_fees": total_fees_sum,
             "total_companies": total_companies,
             "total_vessels_today": total_vessels_today

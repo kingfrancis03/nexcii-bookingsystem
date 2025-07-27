@@ -10,10 +10,10 @@ interface Props {
 class DashboardLayout extends Component<Props> {
   render() {
     return (
-      <div>
+      <div className='h-full'>
         <Sidebar />
         <Navbar navTitle={ this.props.navTitle }/>
-        <main className="ml-64 mt-16 p-6 bg-[#DFE5EE] min-h-screen">
+        <main className="ml-64 mt-16 p-4 bg-[#DFE5EE] h-full pb-20">
           {this.props.children}
         </main>
       </div>

@@ -84,7 +84,7 @@ class Navbar extends Component<NavbarProps, NavbarState> {
         <div className="flex items-center gap-5">
           <span>{user?.username || 'User'}</span>
            {/* Notifications */}
-          <div className="relative" ref={this.notifRef}>
+          {/* <div className="relative" ref={this.notifRef}>
             <button onClick={this.toggleNotif}>
               <Bell className="w-6 h-6 text-gray-600 hover:text-blue-600 cursor-pointer" />
               {notifications.length > 0 && (
@@ -113,7 +113,7 @@ class Navbar extends Component<NavbarProps, NavbarState> {
                 </ul>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Settings */}
           <div className="relative" ref={this.settingsRef}>

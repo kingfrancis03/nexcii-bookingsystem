@@ -154,9 +154,9 @@ class TruckingRecords extends Component {
     };
 
     return (
-      <div className="flex flex-col min-h-screen bg-[#E6EFF5]">
+      <div className="flex flex-col min-h-screen">
         <div className="flex-grow overflow-auto">
-          <h1 className="text-m font-bold mb-4">{this.props.overview.title}</h1>
+          <h1 className="text-m font-bold mb-2">{this.props.overview.title}</h1>
           <table className="w-full bg-white shadow rounded text-s text-center">
             <thead className="bg-gray-100 text-gray-600">
               <tr>

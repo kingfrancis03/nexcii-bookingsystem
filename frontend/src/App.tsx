@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { connect } from 'react-redux';
 import DashboardLayout from './layouts/dashboardlayout'
 import Dashboard from './pages/dashboard';
+import TruckingRecord from './pages/truckingRecords';
 import BookingSystem from './pages/bookingSystem';
 import Login from './pages/login';
 import NotFound from './pages/NotFound'; // <--- new import
@@ -44,7 +45,7 @@ class App extends Component<AppProps> {
             path="/trucking-records"
             element={role === 'admin' || role === 'user' ? (
               <DashboardLayout navTitle='Trucking Records'>
-                Trucking Records
+                <TruckingRecord />
               </DashboardLayout>
             ) : (
               <Navigate to="/" />
@@ -62,7 +63,7 @@ class App extends Component<AppProps> {
           />
           <Route
             path="/booking-system"
-            element={role === 'user' ? <BookingSystem /> : <Navigate to="/" />}
+            element={<BookingSystem />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>

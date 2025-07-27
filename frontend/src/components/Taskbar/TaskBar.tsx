@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import { EyeOff, SlidersHorizontal, Rows3, Filter, Download } from 'lucide-react'; 
 import Dropdown from '../Dropdown';
 
-interface Header {
-  key: string;
-  label: any;
-}
-
 interface TaskBarProps {
   changeOverview: (value: string) => void;
-  theaders: Header[];
+  theaders: [];
   onToggleColumn?: (visibleColumns: string[]) => void; // optional callback to parent
 }
 
@@ -112,14 +107,6 @@ class TaskBar extends Component<TaskBarProps, TaskBarState> {
             </ul>
           )}
         </Dropdown>
-
-        <Divider />
-
-        {/* Group */}
-        <button className="flex items-center gap-1 hover:underline">
-          <SlidersHorizontal className="w-4 h-4" />
-          <span>Group</span>
-        </button>
 
         <Divider />
 
