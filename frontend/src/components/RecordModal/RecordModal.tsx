@@ -79,12 +79,27 @@ class RecordModal extends Component<Props, State> {
     if (this.props.isOpen && this.props.mode === 'add' && prevProps.isOpen !== this.props.isOpen) {
       this.setState({ formData: this.getEmptyForm() });
     }
+
+    if (
+      this.props.mode === 'add' &&
+      this.props.isOpen &&
+      this.props.feeList !== prevProps.feeList
+    ) {
+      this.setState({ formData: this.getEmptyForm() });
+    }
   }
 
   getEmptyForm(): RecordData {
+    const { feeList } = this.props;
+
+    const defaultFees: Fee[] = feeList.map(fee => ({
+      fee_name: fee.fee_name,
+      amount: fee.default_value,
+    }));
+
     return {
       destination: '',
-      record_date: '',
+      record_date: new Date().toISOString().split('T')[0],
       record_time: '',
       vessel_id: 0,
       trucking_company_id: 0,
@@ -92,13 +107,13 @@ class RecordModal extends Component<Props, State> {
       contact_info: '',
       weight_1: 0,
       weight_2: 0,
-      fees: [],
+      fees: defaultFees,
     };
   }
 
   handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       formData: {
         ...prevState.formData,
         [name]: name.includes('weight') || name.includes('_id') || name === 'created_by'
@@ -118,7 +133,7 @@ class RecordModal extends Component<Props, State> {
       updatedFees.push({ fee_name: feeName, amount });
     }
 
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       formData: {
         ...prevState.formData,
         fees: updatedFees,
@@ -127,8 +142,6 @@ class RecordModal extends Component<Props, State> {
   };
 
   handleSubmit = () => {
-    console.log(this.state.formData);
-    
     this.props.onSubmit(this.state.formData);
     this.props.onClose();
   };
@@ -166,12 +179,12 @@ class RecordModal extends Component<Props, State> {
                   type={type}
                   value={(formData as any)[name]}
                   onChange={this.handleChange}
+                  min={name === 'record_date' ? new Date().toISOString().split('T')[0] : undefined}
                   className="border border-gray-300 rounded px-3 py-2 text-sm"
                 />
               </div>
             ))}
 
-            {/* Trucking Company Select */}
             <div className="flex flex-col">
               <label htmlFor="trucking_company_id" className="text-xs font-medium text-gray-700 mb-1">Trucking Company</label>
               <select
@@ -188,7 +201,6 @@ class RecordModal extends Component<Props, State> {
               </select>
             </div>
 
-            {/* Vessel Select */}
             <div className="flex flex-col">
               <label htmlFor="vessel_id" className="text-xs font-medium text-gray-700 mb-1">Vessel</label>
               <select
@@ -206,34 +218,30 @@ class RecordModal extends Component<Props, State> {
             </div>
           </div>
 
-          {/* Fees Section */}
-            <div className="mt-6">
+          <div className="mt-6">
             <h3 className="text-sm font-semibold mb-2">Fees</h3>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {feeList.map((feeDef) => {
+              {feeList.map((feeDef) => {
                 const existing = formData.fees.find(f => f.fee_name === feeDef.fee_name);
-                const amount = existing ? existing.amount : 0;
+                const amount = existing ? existing.amount : feeDef.default_value;
 
                 return (
-                    <div key={feeDef.fee_name} className="flex flex-col gap-1">
+                  <div key={feeDef.fee_name} className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-gray-700">
-                        {feeDef.fee_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                      {feeDef.fee_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                     </label>
                     <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => this.handleFeeChangeFromDefinition(feeDef.fee_name, Number(e.target.value))}
-                        className="border border-gray-300 rounded px-2 py-1 text-sm"
+                      type="number"
+                      value={amount}
+                      onChange={(e) => this.handleFeeChangeFromDefinition(feeDef.fee_name, Number(e.target.value))}
+                      className="border border-gray-300 rounded px-2 py-1 text-sm"
                     />
-                    </div>
+                  </div>
                 );
-                })}
+              })}
             </div>
-            </div>
+          </div>
 
-
-          {/* Footer */}
           <div className="mt-6 flex justify-end gap-2">
             <button onClick={onClose} className="px-4 py-2 text-sm border rounded">Cancel</button>
             <button
@@ -249,7 +257,6 @@ class RecordModal extends Component<Props, State> {
   }
 }
 
-// Redux mappings
 const mapStateToProps = (state: any) => ({
   truckingCompanies: state.truckingCompany.list || [],
   vessels: state.vessel.list || [],

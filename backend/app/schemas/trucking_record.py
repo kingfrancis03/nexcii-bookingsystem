@@ -56,6 +56,10 @@ class TruckingRecordFilter(BaseModel):
     created_by: Optional[int] = None
     overview: Optional[str] = None  #his_month"
 
+class FeeInput(BaseModel):
+    fee_name: str
+    amount: float
+
 # ✳️ Create schema
 class TruckingRecordCreate(BaseModel):
     destination: str
@@ -68,6 +72,7 @@ class TruckingRecordCreate(BaseModel):
     weight_1: Optional[float]
     weight_2: Optional[float]
     created_by: Optional[int]
+    fees: List[FeeInput]
 
     class Config:
         orm_mode = True
@@ -84,6 +89,7 @@ class TruckingRecordUpdate(BaseModel):
     weight_1: Optional[float]
     weight_2: Optional[float]
     updated_by: Optional[int]
+    fees: List[FeeInput]
 
     class Config:
         orm_mode = True

@@ -3,6 +3,7 @@ import { loginApi } from '../services/auth';
 import { decodeToken } from '../utils/jwt';
 
 const defaultUser = {
+  userID: null,
   username: null,
   name: null,
   role: null
@@ -41,9 +42,12 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         const decoded = decodeToken(action.payload.token);
+        console.log(decoded);
+        
         state.loading = false;
         state.token = action.payload.token;
         state.user = {
+          userID: decoded?.sub,
           username: decoded?.username,
           name: decoded?.name,
           role: decoded?.role

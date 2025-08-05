@@ -90,26 +90,31 @@ class TruckingRecordService:
             TruckingRecord.is_deleted == False
         ).first()
 
-    def create(self, record_data: TruckingRecordCreate):
-        # Create the record first
-        new_record = TruckingRecord(**record_data.dict())
+    def create(self, data: TruckingRecordCreate):
+        fees_data = data.fees
+        record_fields = data.dict(exclude={"fees"})
+
+        new_record = TruckingRecord(**record_fields)
         self.db.add(new_record)
         self.db.commit()
         self.db.refresh(new_record)
 
-        # Get all active fees
+        # Load all active fees once
         active_fees = self.db.query(Fee).filter(Fee.status == 'active').all()
+        fee_map = {fee.fee_name: fee for fee in active_fees}
 
-        # Attach fees to the record with default values
-        for fee in active_fees:
-            fee_link = TruckingRecordFee(
-                record_id=new_record.id,
-                fee_id=fee.id,
-                amount=fee.default_value
-            )
-            self.db.add(fee_link)
+        # Attach fees with custom amounts
+        for fee_input in fees_data:
+            fee_obj = fee_map.get(fee_input.fee_name)
+            if fee_obj:
+                self.db.add(TruckingRecordFee(
+                    record_id=new_record.id,
+                    fee_id=fee_obj.id,
+                    amount=fee_input.amount
+                ))
 
         self.db.commit()
+
         return new_record
 
     def create_many(self, records_data: List[TruckingRecordCreate]):
@@ -130,6 +135,7 @@ class TruckingRecordService:
                         amount=fee.default_value
                     ))
             self.db.commit()
+
             return new_records
 
         except Exception:
@@ -139,12 +145,38 @@ class TruckingRecordService:
     def update(self, record_id: int, update_data: TruckingRecordUpdate):
         record = self.get_by_id(record_id)
         if not record:
-            return None
-        for field, value in update_data.dict(exclude_unset=True).items():
+            raise HTTPException(status_code=404, detail="Record not found")
+
+        update_fields = update_data.dict(exclude_unset=True, exclude={"fees"})
+        for field, value in update_fields.items():
             setattr(record, field, value)
+
+        # ✅ Handle fee updates
+        if update_data.fees:
+            # Delete existing fees for the record
+            self.db.query(TruckingRecordFee).filter(
+                TruckingRecordFee.record_id == record.id
+            ).delete()
+
+            # Fetch active fee objects by name
+            active_fees = self.db.query(Fee).filter(Fee.status == 'active').all()
+            fee_map = {fee.fee_name: fee for fee in active_fees}
+
+            # Add updated fees
+            for fee_input in update_data.fees:
+                fee_obj = fee_map.get(fee_input.fee_name)
+                if fee_obj:
+                    self.db.add(TruckingRecordFee(
+                        record_id=record.id,
+                        fee_id=fee_obj.id,
+                        amount=fee_input.amount
+                    ))
+
         self.db.commit()
         self.db.refresh(record)
+
         return record
+
 
     def soft_delete(self, record_id: int):
         record = self.get_by_id(record_id)
@@ -152,4 +184,5 @@ class TruckingRecordService:
             return None
         record.is_deleted = True
         self.db.commit()
+
         return record
